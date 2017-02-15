@@ -3,6 +3,7 @@ package edu.mtholyoke.cs341bd.bookz;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class HTMLView {
 
@@ -44,7 +45,7 @@ public class HTMLView {
 	 * @param html
 	 *            where to write to; get this from the HTTP response.
 	 */
-	void printWritrPageEnd(PrintWriter html) {
+	void printPageEnd(PrintWriter html) {
 		html.println("  </body>");
 		html.println("</html>");
 	}
@@ -53,8 +54,35 @@ public class HTMLView {
 		try (PrintWriter html = resp.getWriter()) {
 			printPageStart(html, "Bookz");
 
-			printWritrPageEnd(html);
+			printPageEnd(html);
 		}
 	}
 
+	public void showBookPage(GutenbergBook book, HttpServletResponse resp) throws IOException {
+		try (PrintWriter html = resp.getWriter()) {
+			printPageStart(html, "Bookz");
+			printBookHTML(html, book);
+			printPageEnd(html);
+		}
+	}
+
+	private void printBookHTML(PrintWriter html, GutenbergBook book) {
+		html.println("<div class='book'>");
+		html.println("<div class='title'>"+book.title+"</div>");
+		html.println("<div class='creator'>"+book.creator+"</div>");
+		// TODO, finish up fields.
+		html.println("</div>");
+	}
+
+	public void showBookCollection(List<GutenbergBook> theBooks, HttpServletResponse resp) throws IOException {
+		try (PrintWriter html = resp.getWriter()) {
+			printPageStart(html, "Bookz");
+
+			for (int i = 0; i < Math.min(20,theBooks.size()); i++) {
+				printBookHTML(html, theBooks.get(i));
+			}
+
+			printPageEnd(html);
+		}
+	}
 }

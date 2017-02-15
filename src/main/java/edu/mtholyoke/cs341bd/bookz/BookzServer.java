@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author jfoley
@@ -90,79 +89,15 @@ public class BookzServer extends AbstractHandler {
 		String path = req.getPathInfo();
 
 		if ("GET".equals(method)) {
-
-			if(path.startsWith("/book/")) {
-				String id = path.substring(6);
-				view.showBookPage(this.model.getBook(id));
+			if(path.startsWith("/title/")) {
+				char firstChar = path.charAt(7);
+				view.showBookCollection(this.model.getBooksStartingWith(firstChar), resp);
 			}
 
-			if ("/front".equals(path) || "/".equals(path))){
+			if ("/front".equals(path) || "/".equals(path)) {
 				view.showFrontPage(this.model, resp);
+				return;
 			}
 		}
-	}
-
-	/**
-	 * When a user submits (enter key) or pressed the "Write!" button, we'll get
-	 * their request in here. This is called explicitly from handle, above.
-	 * 
-	 * @param req
-	 *            -- we'll grab the form parameters from here.
-	 * @param resp
-	 *            -- where to write their "success" page.
-	 * @throws IOException
-	 *             again, real life happens.
-	 */
-	private void handleForm(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		Map<String, String[]> parameterMap = req.getParameterMap();
-
-		// if for some reason, we have multiple "message" fields in our form,
-		// just put a space between them, see Util.join.
-		// Note that message comes from the name="message" parameter in our
-		// <input> elements on our form.
-		String user = Util.join(parameterMap.get("user"));
-		String title = Util.join(parameterMap.get("title"));
-		String content = Util.join(parameterMap.get("content"));
-
-		if (user != null && title != null && content != null) {
-			// Good, got new message from form.
-			resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-			model.createPost(new WritrPost(user, title, content));
-
-			view.sendThankYouPage(resp);
-
-			return;
-		}
-
-		// user submitted something weird.
-		resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad user.");
-	}
-	
-	/**
-	 * When a user submits (enter key) or pressed the "Write!" button, we'll get
-	 * their request in here. This is called explicitly from handle, above.
-	 * 
-	 * @param req
-	 *            -- we'll grab the form parameters from here.
-	 * @param writrPost the post to add comment to
-	 * @param resp
-	 *            -- where to write their "success" page.
-	 * @throws IOException
-	 *             again, real life happens.
-	 */
-	private boolean handleCommentForm(HttpServletRequest req, WritrPost writrPost, HttpServletResponse resp) throws IOException {
-		Map<String, String[]> parameterMap = req.getParameterMap();
-
-		String user = Util.join(parameterMap.get("user"));
-		String content = Util.join(parameterMap.get("content"));
-
-		if (user != null && content != null) {
-			writrPost.comments.add(new WritrComment(user, content));
-			return true;
-		}
-
-		// user submitted something weird.
-		resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad user.");
-		return false;
 	}
 }

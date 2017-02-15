@@ -33,4 +33,11 @@ public class Util {
 
     return yyyymmdd+" "+hhmm;
   }
+
+  public static String getAfterIfStartsWith(String prefix, String input) {
+    if(input.startsWith(prefix)) {
+      return input.substring(prefix.length());
+    }
+    return null;
+  }
 }
