@@ -85,6 +85,7 @@ public class HTMLView {
 		if(book.creator != null) {
 			html.println("<div class='creator'>" + book.creator + "</div>");
 		}
+		html.println("<a href='"+book.getGutenbergURL()+"'>On Project Gutenberg</a>");
 		// TODO, finish up fields.
 		html.println("</a>");
 		html.println("</div>");
