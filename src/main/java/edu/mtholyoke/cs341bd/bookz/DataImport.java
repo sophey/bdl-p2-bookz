@@ -71,5 +71,7 @@ public class DataImport {
         }
       }
     }
+
+    System.out.println("Loaded up "+library.size()+" books into our library!");
   }
 }
