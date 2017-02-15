@@ -89,11 +89,19 @@ public class BookzServer extends AbstractHandler {
 		String path = req.getPathInfo();
 
 		if ("GET".equals(method)) {
-			if(path.startsWith("/title/")) {
-				char firstChar = path.charAt(7);
+			String titleCmd = Util.getAfterIfStartsWith("/title/", path);
+			if(titleCmd != null) {
+				char firstChar = titleCmd.charAt(0);
 				view.showBookCollection(this.model.getBooksStartingWith(firstChar), resp);
 			}
 
+			// Check for startsWith and substring
+			String bookId = Util.getAfterIfStartsWith("/book/", path);
+			if(bookId != null) {
+				view.showBookPage(this.model.getBook(bookId), resp);
+			}
+
+			// Front page!
 			if ("/front".equals(path) || "/".equals(path)) {
 				view.showFrontPage(this.model, resp);
 				return;

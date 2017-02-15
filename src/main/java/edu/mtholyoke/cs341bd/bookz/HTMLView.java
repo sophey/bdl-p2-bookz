@@ -31,7 +31,7 @@ public class HTMLView {
 		html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\"" + getStaticURL("bookz.css") + "\">");
 		html.println("  </head>");
 		html.println("  <body>");
-		html.println("  <a href='/front'><h1 class=\"logo\">Writr</h1></a>");
+		html.println("  <a href='/front'><h1 class=\"logo\">"+title+"</h1></a>");
 	}
 
 	public String getStaticURL(String resource) {
@@ -54,6 +54,18 @@ public class HTMLView {
 		try (PrintWriter html = resp.getWriter()) {
 			printPageStart(html, "Bookz");
 
+			html.println("<h3>Browse books by title</h3>");
+
+			for(char letter = 'A'; letter <= 'Z'; letter++) {
+				html.println("<a href='/title/"+letter+"'>"+letter+"</a> ");
+			}
+
+			// get 5 random books:
+			html.println("<h3>Check out these random books</h3>");
+			List<GutenbergBook> randomBooks = model.getRandomBooks(5);
+			for (GutenbergBook randomBook : randomBooks) {
+				printBookHTML(html, randomBook);
+			}
 			printPageEnd(html);
 		}
 	}
@@ -68,9 +80,13 @@ public class HTMLView {
 
 	private void printBookHTML(PrintWriter html, GutenbergBook book) {
 		html.println("<div class='book'>");
+		html.println("<a class='none' href='/book/"+book.id+"'>");
 		html.println("<div class='title'>"+book.title+"</div>");
-		html.println("<div class='creator'>"+book.creator+"</div>");
+		if(book.creator != null) {
+			html.println("<div class='creator'>" + book.creator + "</div>");
+		}
 		// TODO, finish up fields.
+		html.println("</a>");
 		html.println("</div>");
 	}
 
