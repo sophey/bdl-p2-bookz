@@ -1,0 +1,81 @@
+body {
+    background-color: #057;
+}
+.body{
+    margin:40px auto;
+    max-width:600pt;
+    line-height:1.6;
+    font-size:18px;
+    padding:0 10px
+}
+h1,h2,h3{
+    line-height:1.2;
+    color: rgb(0,87,115)
+}
+a {
+    color: rgb(0,87,115)
+}
+div.newPostForm {
+	background-color: #ccf;
+    text-align: center;
+}
+div.newCommentForm {
+	background-color: #ccf;
+    text-align: center;
+}
+label {
+	display: block;
+}
+textarea {
+	display: block;
+	width: 40em;
+	height: 5em;
+	margin: auto;
+}
+div.message {
+    border: solid 1px #ccc;
+    margin: 3pt;
+    padding: 3pt;
+    background-color: #eee;
+}
+span.datetime {
+    margin-right: 10pt;
+    color: #444;
+}
+span.numComments {
+	display:block;
+	float:right;
+}
+.thanks {
+    border: solid 1px #ccc;
+    margin: 3pt;
+    padding: 3pt;
+    background-color: #eee;
+}
+h1.logo {
+    color: #fff;
+}
+a.none {
+	text-decoration: none;
+	color: #000;
+}
+div.title {
+	font-size: 15pt;
+	font-weight: bold;
+	background-color: #036;
+	color: #fff;
+}
+div.info {
+	font-size: 11pt;
+	font-style: italic;
+}
+div.content {
+	background-color: white;
+	padding: 2pt;
+}
+div.comment {
+    border: solid 1px #ccc;
+    margin: 3pt;
+    padding: 3pt;
+    background-color: #ddf;
+}
