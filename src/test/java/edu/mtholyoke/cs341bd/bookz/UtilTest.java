@@ -19,4 +19,13 @@ public class UtilTest {
     assertEquals("/search?page=1&q=vampires+are+cool", Util.encodeParametersInURL(parameters, "/search"));
   }
 
+  @Test
+  public void encodeParametersInURL2() throws Exception {
+    Map<String, String> parameters = new TreeMap<>();
+    parameters.put("a", "aaa");
+    parameters.put("b", "bbb");
+    parameters.put("c", "ccc");
+    assertEquals("/search?a=aaa&b=bbb&c=ccc", Util.encodeParametersInURL(parameters, "/search"));
+  }
+
 }
