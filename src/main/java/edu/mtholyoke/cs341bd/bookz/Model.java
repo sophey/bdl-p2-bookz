@@ -56,8 +56,19 @@ public class Model {
    * @return
    */
   public List<GutenbergBook> getBooksStartingWith(char firstChar, int page) {
+    return getPage(getBooksStartingWith(firstChar), page);
+  }
+
+  /**
+   * More general way to get the page. Takes in a list of books and a page
+   * number and generates the list of books on that page.
+   *
+   * @param books list of books to pull from
+   * @param page  page to pull
+   * @return page
+   */
+  public List<GutenbergBook> getPage(List<GutenbergBook> books, int page) {
     int startIndex = (page - 1) * NUM_PER_PAGE;
-    List<GutenbergBook> books = getBooksStartingWith(firstChar);
     if (books == null)
       return null;
     if (startIndex >= books.size()) {
