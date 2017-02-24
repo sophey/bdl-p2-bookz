@@ -44,8 +44,26 @@ public class Model {
     return booksStartingWith.get(firstChar);
   }
 
+  /**
+   * Gets the number of pages in a list of books starting with character.
+   *
+   * @param c
+   * @return
+   */
   public int getNumPagesStartingWithChar(char c) {
-    return (int) Math.ceil(getBooksStartingWith(c).size() / NUM_PER_PAGE);
+    return getNumPages(getBooksStartingWith(c));
+  }
+
+  /**
+   * General get number of pages given a list of books.
+   *
+   * @param books
+   * @return
+   */
+  public int getNumPages(List<GutenbergBook> books) {
+    if (books == null)
+      return 0;
+    return (int) Math.ceil(books.size() / NUM_PER_PAGE);
   }
 
   /**
