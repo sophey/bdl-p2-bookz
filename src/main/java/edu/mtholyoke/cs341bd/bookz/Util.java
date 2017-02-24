@@ -1,9 +1,13 @@
 package edu.mtholyoke.cs341bd.bookz;
 
 import javax.annotation.Nullable;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -40,4 +44,25 @@ public class Util {
     }
     return null;
   }
+
+  public static String encodeParametersInURL(Map<String, String> params, String url) {
+		StringBuilder output = new StringBuilder();
+		output.append(url);
+		output.append('?');
+
+		try {
+		  int index = 0;
+			for (Map.Entry<String, String> kv : params.entrySet()) {
+			  if(index > 0) output.append('&');
+				output.append(URLEncoder.encode(kv.getKey(), "UTF-8"));
+				output.append('=');
+				output.append(URLEncoder.encode(kv.getValue(), "UTF-8"));
+				index++;
+			}
+		} catch (UnsupportedEncodingException uee) {
+			// This should never happen, because "UTF-8" is always installed in Java.
+			throw new AssertionError(uee);
+		}
+		return output.toString();
+	}
 }
