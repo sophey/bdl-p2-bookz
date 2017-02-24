@@ -119,5 +119,21 @@ public class BookzServer extends AbstractHandler {
         return;
       }
     }
+    
+    if ("GET".equals(method)) {
+		if ("/searchBook".equals(path)) {
+			// search and display book(s)\
+			String book = req.getParameter("searchBook");
+			System.out.println(book);
+			handleSearch(req, resp, book);		
+		}
+	}
   }
+  
+  public void handleSearch(HttpServletRequest req, HttpServletResponse resp, String book) {
+		GutenbergBook gutenberg = new GutenbergBook ();
+		gutenberg = model.getBook(book);
+		
+		//System.out.println(guntenberg.title);
+	}
 }

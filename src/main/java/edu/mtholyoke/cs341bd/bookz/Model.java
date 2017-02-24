@@ -103,4 +103,14 @@ public class Model {
   public List<GutenbergBook> getRandomBooks(int count) {
     return ReservoirSampler.take(count, library.values());
   }
+  
+  /**
+   * Search book
+   * @param book
+   * @return
+   */
+  public GutenbergBook searchBook (String book) {
+	// default
+	return library.get(0);
+  }
 }
