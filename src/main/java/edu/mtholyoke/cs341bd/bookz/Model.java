@@ -9,6 +9,8 @@ import java.util.Map;
 public class Model {
   Map<String, GutenbergBook> library;
   Map<Character, List<GutenbergBook>> booksStartingWith;
+  
+  List<GutenbergBook> searchBooks;
 
   public final int NUM_PER_PAGE = 20;
 
@@ -21,6 +23,27 @@ public class Model {
     storeBooksStartingWith();
   }
 
+  /**
+   * Create a hashmap of all books containing that string
+   * @param book
+   * @return
+   */
+  public GutenbergBook searchTitle (String book) {
+	  // create an arraylist to hold all the books in input string in long title
+	  searchBooks = new ArrayList<>();
+	  
+	  for (GutenbergBook searchBook : library.values()) {
+		  if (searchBook.longTitle.contains(book)) {
+			  searchBooks.add(searchBook);
+			  System.out.println(searchBook.longTitle);
+		  }
+	  }
+	  
+	  
+	
+	return library.get(0);
+  }
+  
   /**
    * Add the books starting with each character to the HashMap for easy
    * retrieval.
@@ -104,13 +127,5 @@ public class Model {
     return ReservoirSampler.take(count, library.values());
   }
   
-  /**
-   * Search book
-   * @param book
-   * @return
-   */
-  public GutenbergBook searchBook (String book) {
-	// default
-	return library.get(0);
-  }
+
 }

@@ -132,7 +132,7 @@ public class BookzServer extends AbstractHandler {
   
   public void handleSearch(HttpServletRequest req, HttpServletResponse resp, String book) {
 		GutenbergBook gutenberg = new GutenbergBook ();
-		gutenberg = model.getBook(book);
+		//gutenberg = model.getBook(book);
 		
 		//System.out.println(guntenberg.title);
 	}
