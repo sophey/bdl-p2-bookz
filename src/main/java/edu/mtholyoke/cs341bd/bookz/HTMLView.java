@@ -53,6 +53,13 @@ public class HTMLView {
   void showFrontPage(Model model, HttpServletResponse resp) throws IOException {
     try (PrintWriter html = resp.getWriter()) {
       printPageStart(html, "Bookz");
+      
+   // search for book    
+	  html.println("<div class=\"form\">");
+	  html.println("	<form action=\"searchBook\" method=\"SEARCH\">");
+		html.println("		<label>Search: <input type=\"text\" name=\"searchBook\" /></label>");
+		html.println("	<form>");
+		html.println("</div>");
 
       html.println("<h3>Browse books by title</h3>");
 

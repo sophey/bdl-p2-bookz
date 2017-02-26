@@ -114,4 +114,16 @@ public class Model {
   public void addFlagged(String id, String problem) {
     flagged.put(getBook(id), problem);
   }
+
+  /**
+   * Search book
+   *
+   * @param book
+   * @return
+   */
+
+  public GutenbergBook searchBook(String book) {
+    // default
+    return library.get(0);
+  }
 }

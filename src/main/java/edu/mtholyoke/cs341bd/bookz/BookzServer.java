@@ -103,6 +103,13 @@ public class BookzServer extends AbstractHandler {
         return;
       }
 
+      if ("/searchBook".equals(path)) {
+        // search and display book(s)\
+        String book = req.getParameter("searchBook");
+        System.out.println(book);
+        handleSearch(req, resp, book);
+      }
+
       String titleCmd = Util.getAfterIfStartsWith("/title/", path);
       if (titleCmd != null) {
         char firstChar = titleCmd.charAt(0);
@@ -200,4 +207,11 @@ public class BookzServer extends AbstractHandler {
     }
   }
 
+  public void handleSearch(HttpServletRequest req, HttpServletResponse resp,
+                           String book) {
+    GutenbergBook gutenberg = new GutenbergBook();
+    gutenberg = model.getBook(book);
+
+    //System.out.println(guntenberg.title);
+  }
 }
