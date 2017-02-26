@@ -9,8 +9,12 @@ import java.util.Map;
 public class Model {
   Map<String, GutenbergBook> library;
   Map<Character, List<GutenbergBook>> booksStartingWith;
+<<<<<<< HEAD
   
   List<GutenbergBook> searchBooks;
+=======
+  Map<GutenbergBook, String> flagged; // id to problem
+>>>>>>> 014da7b777c23881f2b53b776715102d60ad2c6d
 
   public final int NUM_PER_PAGE = 20;
 
@@ -21,6 +25,8 @@ public class Model {
     DataImport.loadJSONBooks(library);
     // store books starting with different characters in map
     storeBooksStartingWith();
+    // set flagged to empty
+    flagged = new HashMap<>();
   }
 
   /**
@@ -108,7 +114,7 @@ public class Model {
    * @param page  page to pull
    * @return page
    */
-  public List<GutenbergBook> getPage(List<GutenbergBook> books, int page) {
+  public <T> List<T> getPage(List<T> books, int page) {
     int startIndex = (page - 1) * NUM_PER_PAGE;
     if (books == null)
       return null;
@@ -117,7 +123,7 @@ public class Model {
     }
     int endIndex = startIndex + NUM_PER_PAGE;
     if (endIndex >= books.size()) {
-      endIndex = books.size() - 1;
+      endIndex = books.size();
     }
 
     return books.subList(startIndex, endIndex);
@@ -126,6 +132,29 @@ public class Model {
   public List<GutenbergBook> getRandomBooks(int count) {
     return ReservoirSampler.take(count, library.values());
   }
+<<<<<<< HEAD
   
 
+=======
+
+  public Map<GutenbergBook, String> getFlagged() {
+    return flagged;
+  }
+
+  public void addFlagged(String id, String problem) {
+    flagged.put(getBook(id), problem);
+  }
+
+  /**
+   * Search book
+   *
+   * @param book
+   * @return
+   */
+
+  public GutenbergBook searchBook(String book) {
+    // default
+    return library.get(0);
+  }
+>>>>>>> 014da7b777c23881f2b53b776715102d60ad2c6d
 }

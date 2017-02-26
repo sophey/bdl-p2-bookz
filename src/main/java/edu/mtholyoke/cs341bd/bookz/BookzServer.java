@@ -12,7 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author jfoley
@@ -98,6 +103,12 @@ public class BookzServer extends AbstractHandler {
         return;
       }
 
+      if ("/searchBook".equals(path)) {
+        // search and display book(s)\
+        String book = req.getParameter("searchBook");
+        System.out.println(book);
+      }
+
       String titleCmd = Util.getAfterIfStartsWith("/title/", path);
       if (titleCmd != null) {
         char firstChar = titleCmd.charAt(0);
@@ -113,27 +124,87 @@ public class BookzServer extends AbstractHandler {
         view.showBookPage(this.model.getBook(bookId), resp);
       }
 
+      String flagId = Util.getAfterIfStartsWith("/flag/", path);
+      if (flagId != null) {
+        view.showFlagPage(this.model.getBook("etext" + flagId), resp);
+      }
+
+      String reviewPage = Util.getAfterIfStartsWith("/flagged", path);
+      if (reviewPage != null) {
+        view.showReviewPage(model.getFlagged(), resp);
+      }
+
       // Front page!
       if ("/front".equals(path) || "/".equals(path)) {
         view.showFrontPage(this.model, resp);
         return;
       }
+    } else if ("POST".equals(method)) {
+      if (path.contains("/submitFlag")) {
+        handleForm(req, resp);
+        return;
+      }
     }
-    
-    if ("GET".equals(method)) {
-		if ("/searchBook".equals(path)) {
-			// search and display book(s)\
-			String book = req.getParameter("searchBook");
-			System.out.println(book);
-			handleSearch(req, resp, book);		
-		}
-	}
   }
-  
-  public void handleSearch(HttpServletRequest req, HttpServletResponse resp, String book) {
-		GutenbergBook gutenberg = new GutenbergBook ();
-		//gutenberg = model.getBook(book);
-		
-		//System.out.println(guntenberg.title);
-	}
+
+
+  /**
+   * When a user submits (enter key) or pressed the "Submit" button, we'll
+   * get their request in here. This is called explicitly from handle, above.
+   *
+   * @param req  -- we'll grab the form parameters from here.
+   * @param resp -- where to write their "success" page.
+   * @throws IOException again, real life happens.
+   */
+  private void handleForm(HttpServletRequest req,
+                          HttpServletResponse resp)
+      throws IOException {
+    Map<String, String[]> parameterMap = req.getParameterMap();
+
+    // if for some reason, we have multiple "message" fields in our form,
+    // just put a space between them, see Util.join.
+    // Note that message comes from the name="message" parameter in our
+    // <input> elements on our form.
+    String problem = Util.join(parameterMap.get("problem"));
+    String id = Util.join(parameterMap.get("id"));
+
+    if (problem != null && id != null) {
+      // Good, got new message from form.
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+
+      model.addFlagged(id, problem);
+
+      submitPage(resp);
+
+      return;
+    }
+
+    // user submitted something weird.
+    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad flag.");
+  }
+
+  private void submitPage(HttpServletResponse resp) {
+    // Respond!
+    try (PrintWriter html = resp.getWriter()) {
+      view.printPageStart(html, "Bookz: Flag Submitted!");
+      // Print actual redirect directive:
+      html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
+
+      // Thank you, link.
+      html.println("<div class=\"body\">");
+      html.println("<div class=\"thanks\">");
+      html.println("<p>Thanks for your flag!</p>");
+      html.println("<a href=\"front\">Back to the front page...</a> " +
+          "(automatically redirect in 3 seconds).");
+      html.println("</div>");
+      html.println("</div>");
+
+      view.printPageEnd(html);
+
+    } catch (IOException ignored) {
+      // Don't consider a browser that stops listening to us after
+      // submitting a form to be an error.
+    }
+  }
+
 }
