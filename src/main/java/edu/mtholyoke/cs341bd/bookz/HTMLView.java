@@ -1,10 +1,10 @@
 package edu.mtholyoke.cs341bd.bookz;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 public class HTMLView {
 
@@ -69,6 +69,7 @@ public class HTMLView {
       for (GutenbergBook randomBook : randomBooks) {
         printBookHTML(html, randomBook);
       }
+      html.println("<a href='/flagged'>Review Flags</a>");
       printPageEnd(html);
     }
   }
@@ -82,22 +83,60 @@ public class HTMLView {
     }
   }
 
+  /**
+   * Displays the flagged books and the problems.
+   *
+   * @param problems
+   * @param resp
+   * @throws IOException
+   */
+  public void showReviewPage(Map<GutenbergBook,
+      String> problems, HttpServletResponse resp)
+      throws IOException {
+    try (PrintWriter html = resp.getWriter()) {
+      printPageStart(html, "Flagz");
+      for (GutenbergBook book : problems.keySet()) {
+        printFlagHTML(html, book, problems.get(book));
+      }
+      printPageEnd(html);
+    }
+  }
+
+  /**
+   * Prints the flagged book with the problem.
+   *
+   * @param html
+   * @param book
+   * @param problem
+   */
+  private void printFlagHTML(PrintWriter html, GutenbergBook book, String
+      problem) {
+    html.println("<div class='book'>");
+    html.println("<a class='none' href='/book/" + book.id + "'>");
+    html.println("<div class='title'>" + book.title + "</div>");
+    html.println("<a>" + problem + "</a>");
+    html.println("</a>");
+    html.println("</div>");
+  }
+
   private void printBookHTML(PrintWriter html, GutenbergBook book) {
     html.println("<div class='book'>");
     html.println("<a class='none' href='/book/" + book.id + "'>");
+    html.println
+        ("<a class='flag' href='/flag/" + book.getBookNumber() + "'>Flag</a>");
     html.println("<div class='title'>" + book.title + "</div>");
     if (book.creator != null) {
       html.println("<div class='creator'>" + book.creator + "</div>");
     }
     html.println("<a href='" + book.getGutenbergURL() + "'>On Project " +
         "Gutenberg</a>");
-    // TODO, finish up fields.
     html.println("</a>");
     html.println("</div>");
   }
 
   /**
    * Prints the page numbers at the bottom of the page.
+   *
    * @param html
    * @param current
    * @param end
@@ -128,6 +167,24 @@ public class HTMLView {
       }
 
       printPages(html, currentPage, numPages, query);
+      printPageEnd(html);
+    }
+  }
+
+  public void showFlagPage(GutenbergBook book, HttpServletResponse
+      resp) throws IOException {
+    try (PrintWriter html = resp.getWriter()) {
+      printPageStart(html, "Bookz");
+      if (book != null) {
+        html.println("<form action='submitFlag/" + book.getBookNumber() + "' " +
+            "method='POST'>");
+        html.println("Problem: <br>");
+        html.println("<input type='hidden' name='id' value='etext" + book
+            .getBookNumber() + "'/>");
+        html.println("<input type=\"text\" name=\"problem\">");
+        html.println("<input type=\"submit\" value=\"Submit\">");
+        html.println("</form>");
+      }
       printPageEnd(html);
     }
   }
