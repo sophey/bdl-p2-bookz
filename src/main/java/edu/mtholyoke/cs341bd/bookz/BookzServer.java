@@ -91,6 +91,9 @@ public class BookzServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
+    
+    System.out.println("method: " + method);
+    System.out.println("path: " + path);
 
     if ("GET".equals(method)) {
       if ("/robots.txt".equals(path)) {
@@ -102,13 +105,17 @@ public class BookzServer extends AbstractHandler {
         }
         return;
       }
-
-      if ("/searchBook".equals(path)) {
-        // search and display book(s)\
-        String book = req.getParameter("searchBook");
-        System.out.println(book);
+      
+      
+      if ("/search".equals(path)) {
+    	  
+    	handleSearch(req,resp, path);
+      
       }
+      
+      
 
+      
       String titleCmd = Util.getAfterIfStartsWith("/title/", path);
       if (titleCmd != null) {
         char firstChar = titleCmd.charAt(0);
@@ -205,6 +212,69 @@ public class BookzServer extends AbstractHandler {
       // Don't consider a browser that stops listening to us after
       // submitting a form to be an error.
     }
+  }
+  
+  /**
+   * When a user searches (enter key), we'll get their request in here. 
+   * This is called explicitly from handle, above.
+   * @param req
+   * @param resp
+   * @param path
+   * @throws IOException
+   */
+  private void handleSearch(HttpServletRequest req, HttpServletResponse resp, String path) 
+		  throws IOException {
+	// search and display book(s)\
+      String book = req.getParameter("searchBook");
+      
+      //int pageNum = Integer.parseInt(searchTitleCmd.substring(2));
+      System.out.println("bookTitle: " + book);
+      
+
+      if (book != null) {   	
+          String searchCmd = Util.getAfterIfStartsWith("/searchBook", path);
+      	
+          int pageNum = 1;
+          
+          if (this.model.searchBooks(book, pageNum).size() != 0) {
+        	  System.out.println("not null");
+        	  System.out.println(this.model.searchBooks(book, pageNum).size());
+        	  // show all books with that title 
+              view.showBookCollection(this.model.searchBooks(book, pageNum), 
+              		pageNum, this.model.getNumPagesForSearch(), book, resp);
+          }
+          
+          // if no books redirect
+          else {
+        	  System.out.println("null");
+        	  redirectPageForNoSearchResults(resp);
+          }
+      }  
+  }
+  
+  private void redirectPageForNoSearchResults(HttpServletResponse resp) {
+	// Respond!
+	    try (PrintWriter html = resp.getWriter()) {
+	      view.printPageStart(html, "NO RESULTS");
+	      // Print actual redirect directive:
+	      html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
+
+	      // Thank you, link.
+	      html.println("<div class=\"body\">");
+	      html.println("<div class=\"thanks\">");
+	      html.println("<p>Your search query has no results. Please accept this apology instead</p>");
+	      html.println("<a href=\"front\">Back to the front page...</a> " +
+	          "(automatically redirect in 3 seconds).");
+	      html.println("</div>");
+	      html.println("</div>");
+
+	      view.printPageEnd(html);
+
+	    } catch (IOException ignored) {
+	      // Don't consider a browser that stops listening to us after
+	      // submitting a form to be an error.
+	    }
+  
   }
 
 }

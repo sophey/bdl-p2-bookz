@@ -9,12 +9,10 @@ import java.util.Map;
 public class Model {
   Map<String, GutenbergBook> library;
   Map<Character, List<GutenbergBook>> booksStartingWith;
-<<<<<<< HEAD
   
-  List<GutenbergBook> searchBooks;
-=======
   Map<GutenbergBook, String> flagged; // id to problem
->>>>>>> 014da7b777c23881f2b53b776715102d60ad2c6d
+  
+  List<GutenbergBook> booksWithSearch;
 
   public final int NUM_PER_PAGE = 20;
 
@@ -29,26 +27,7 @@ public class Model {
     flagged = new HashMap<>();
   }
 
-  /**
-   * Create a hashmap of all books containing that string
-   * @param book
-   * @return
-   */
-  public GutenbergBook searchTitle (String book) {
-	  // create an arraylist to hold all the books in input string in long title
-	  searchBooks = new ArrayList<>();
-	  
-	  for (GutenbergBook searchBook : library.values()) {
-		  if (searchBook.longTitle.contains(book)) {
-			  searchBooks.add(searchBook);
-			  System.out.println(searchBook.longTitle);
-		  }
-	  }
-	  
-	  
-	
-	return library.get(0);
-  }
+ 
   
   /**
    * Add the books starting with each character to the HashMap for easy
@@ -132,10 +111,7 @@ public class Model {
   public List<GutenbergBook> getRandomBooks(int count) {
     return ReservoirSampler.take(count, library.values());
   }
-<<<<<<< HEAD
-  
 
-=======
 
   public Map<GutenbergBook, String> getFlagged() {
     return flagged;
@@ -143,18 +119,44 @@ public class Model {
 
   public void addFlagged(String id, String problem) {
     flagged.put(getBook(id), problem);
-  }
-
+  } 
+  
   /**
-   * Search book
+   * Gets the books that have the parameter in its title.
    *
-   * @param book
+   * @param title
+   * @param page
    * @return
    */
-
-  public GutenbergBook searchBook(String book) {
-    // default
-    return library.get(0);
+  public List<GutenbergBook> searchBooks(String book, int page) {
+	storeBooksForSearch(book);
+    return getPage(searchBooks(), page);
   }
->>>>>>> 014da7b777c23881f2b53b776715102d60ad2c6d
+  
+  public List<GutenbergBook> searchBooks() {
+	return booksWithSearch;
+  }
+  
+  public void storeBooksForSearch(String book) {
+	book = book.toLowerCase();
+    booksWithSearch = new ArrayList<>();
+    for (GutenbergBook newBook : library.values()) {
+		//split string into array of strings
+		String [] words = newBook.title.split("\\s+");
+		//http://stackoverflow.com/questions/4674850/converting-a-sentence-string-to-a-string-array-of-words-in-java
+		for (String word : words) {
+			// check for a non-word character 
+		    // It may also be necessary to adjust the character class
+			word = word.replaceAll("[^\\w]", "");
+			word = word.toLowerCase();
+			if (word.equals(book) || word.contains(book))
+				booksWithSearch.add(newBook);
+		} 	  
+    }
+  } 
+  
+  public int getNumPagesForSearch() {
+	    return getNumPages(searchBooks());
+	  }
+  
 }
