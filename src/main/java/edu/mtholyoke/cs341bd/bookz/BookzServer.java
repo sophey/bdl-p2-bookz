@@ -274,7 +274,5 @@ public class BookzServer extends AbstractHandler {
 	      // Don't consider a browser that stops listening to us after
 	      // submitting a form to be an error.
 	    }
-  
   }
-
 }
