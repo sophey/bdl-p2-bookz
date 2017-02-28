@@ -53,15 +53,15 @@ public class HTMLView {
   void showFrontPage(Model model, HttpServletResponse resp) throws IOException {
     try (PrintWriter html = resp.getWriter()) {
       printPageStart(html, "Bookz");
-     
-      
-	  html.println("<div class=\"form\">");
-	  html.println("	<form action=\"search\" method=\"SEARCH\">");
-	  html.println("		<label>Search: "
-	  							+ "<input type=\"text\" name=\"searchBook\" />"
-						+ "</label>");
-	  html.println("	<form>");
-	  html.println("</div>");
+
+
+      html.println("<div class=\"form\">");
+      html.println("	<form action=\"search\" method=\"SEARCH\">");
+      html.println("		<label>Search: "
+          + "<input type=\"text\" name=\"searchBook\" />"
+          + "</label>");
+      html.println("	<form>");
+      html.println("</div>");
 
       html.println("<h3>Browse books</h3>");
 
@@ -158,7 +158,7 @@ public class HTMLView {
       if (i == current) {
         html.println("<a>Current </a>");
       } else {
-        html.println("<a href='/title/" + query + "/" + i + "'>" + i + " </a>" +
+        html.println("<a href='" + query + "/" + i + "'>" + i + " </a>" +
             " ");
       }
     }
@@ -175,26 +175,27 @@ public class HTMLView {
         }
       }
 
-      printPages(html, currentPage, numPages, query);
+      printPages(html, currentPage, numPages, "/title/" + query);
       printPageEnd(html);
     }
   }
-  
-  public void showSearchResults(List<GutenbergBook> theBooks, int
-	      currentPage, int numPages, String query, String title, HttpServletResponse resp)
-	      throws IOException {
-	    try (PrintWriter html = resp.getWriter()) {
-	      printPageStart(html, title);
-	      if (theBooks != null) {
-	        for (int i = 0; i < Math.min(20, theBooks.size()); i++) {
-	          printBookHTML(html, theBooks.get(i));
-	        }
-	      }
 
-	      printPages(html, currentPage, numPages, query);
-	      printPageEnd(html);
-	    }
-	  }
+  public void showSearchResults(List<GutenbergBook> theBooks, int
+      currentPage, int numPages, String query, String title,
+                                HttpServletResponse resp)
+      throws IOException {
+    try (PrintWriter html = resp.getWriter()) {
+      printPageStart(html, title);
+      if (theBooks != null) {
+        for (int i = 0; i < Math.min(20, theBooks.size()); i++) {
+          printBookHTML(html, theBooks.get(i));
+        }
+      }
+
+      printPages(html, currentPage, numPages, "/search?searchBook=" + query);
+      printPageEnd(html);
+    }
+  }
 
   public void showFlagPage(GutenbergBook book, HttpServletResponse
       resp) throws IOException {

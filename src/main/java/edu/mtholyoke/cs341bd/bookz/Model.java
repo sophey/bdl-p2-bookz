@@ -9,9 +9,9 @@ import java.util.Map;
 public class Model {
   Map<String, GutenbergBook> library;
   Map<Character, List<GutenbergBook>> booksStartingWith;
-  
+
   Map<GutenbergBook, String> flagged; // id to problem
-  
+
   List<GutenbergBook> booksWithSearch;
 
   public final int NUM_PER_PAGE = 20;
@@ -27,8 +27,7 @@ public class Model {
     flagged = new HashMap<>();
   }
 
- 
-  
+
   /**
    * Add the books starting with each character to the HashMap for easy
    * retrieval.
@@ -119,8 +118,8 @@ public class Model {
 
   public void addFlagged(String id, String problem) {
     flagged.put(getBook(id), problem);
-  } 
-  
+  }
+
   /**
    * Gets the books that have the parameter in its title.
    *
@@ -129,26 +128,27 @@ public class Model {
    * @return
    */
   public List<GutenbergBook> searchBooks(String book, int page) {
-	storeBooksForSearch(book);
+    storeBooksForSearch(book);
     return getPage(searchBooks(), page);
   }
-  
+
   public List<GutenbergBook> searchBooks() {
-	return booksWithSearch;
+    return booksWithSearch;
   }
-  
+
   public void storeBooksForSearch(String book) {
-	book = book.toLowerCase();
-	
-    
-	booksWithSearch = new ArrayList<>();
+    book = book.toLowerCase();
+
+
+    booksWithSearch = new ArrayList<>();
     for (GutenbergBook newBook : library.values()) {
-		/**
-		 * Search for one word
-		 */
-    	//split string into array of strings
-		//String [] words = newBook.title.split("\\s+");
-		//http://stackoverflow.com/questions/4674850/converting-a-sentence-string-to-a-string-array-of-words-in-java
+      /**
+       * Search for one word
+       */
+      //split string into array of strings
+      //String [] words = newBook.title.split("\\s+");
+      //http://stackoverflow.com/questions/4674850/converting-a-sentence
+      // -string-to-a-string-array-of-words-in-java
 //		for (String word : words) {
 //			// check for a non-word character 
 //		    // It may also be necessary to adjust the character class
@@ -157,19 +157,19 @@ public class Model {
 //			if (word.equals(book) || word.contains(book))
 //				booksWithSearch.add(newBook);
 //		} 	 
-		/**
-		 * Search for multiple words
-		 */
-		//newBook.title = newBook.title.toLowerCase();
-		String lowerCaseBook = newBook.title.toLowerCase();
-		if (lowerCaseBook.contains(book)) {
-			booksWithSearch.add(newBook);
-		}
+      /**
+       * Search for multiple words
+       */
+      //newBook.title = newBook.title.toLowerCase();
+      String lowerCaseBook = newBook.title.toLowerCase();
+      if (lowerCaseBook.contains(book)) {
+        booksWithSearch.add(newBook);
+      }
     }
-  } 
-  
+  }
+
   public int getNumPagesForSearch() {
-	    return getNumPages(searchBooks());
-	  }
-  
+    return getNumPages(searchBooks());
+  }
+
 }

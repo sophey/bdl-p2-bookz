@@ -12,11 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -91,7 +87,7 @@ public class BookzServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
-    
+
     System.out.println("method: " + method);
     System.out.println("path: " + path);
 
@@ -105,17 +101,10 @@ public class BookzServer extends AbstractHandler {
         }
         return;
       }
-      
-      
       if ("/search".equals(path)) {
-    	  
-    	handleSearch(req,resp, path);
-      
+        handleSearch(req, resp, path);
       }
-      
-      
 
-      
       String titleCmd = Util.getAfterIfStartsWith("/title/", path);
       if (titleCmd != null) {
         char firstChar = titleCmd.charAt(0);
@@ -213,66 +202,69 @@ public class BookzServer extends AbstractHandler {
       // submitting a form to be an error.
     }
   }
-  
+
   /**
-   * When a user searches (enter key), we'll get their request in here. 
+   * When a user searches (enter key), we'll get their request in here.
    * This is called explicitly from handle, above.
+   *
    * @param req
    * @param resp
    * @param path
    * @throws IOException
    */
-  private void handleSearch(HttpServletRequest req, HttpServletResponse resp, String path) 
-		  throws IOException {
-	// search and display book(s)\
-      String book = req.getParameter("searchBook");
-      
-      //int pageNum = Integer.parseInt(searchTitleCmd.substring(2));
-      System.out.println("bookTitle: " + book);
-      
+  private void handleSearch(HttpServletRequest req, HttpServletResponse resp,
+                            String path)
+      throws IOException {
+    // search and display book(s)\
+    String book = req.getParameter("searchBook");
 
-      if (book != null) {   	
-          String searchCmd = Util.getAfterIfStartsWith("/searchBook", path);
-      	
-          int pageNum = 1;
-          PrintWriter html = resp.getWriter();
-          if (this.model.searchBooks(book, pageNum).size() != 0) {
-        	  
-        	  int numBooks = this.model.searchBooks().size();
-        	  String title = "We found " + numBooks + " results!";
-              view.showSearchResults(this.model.searchBooks(book, pageNum), 
-              		pageNum, this.model.getNumPagesForSearch(), book, title, resp);
-              
-          }
-          
-          // if no books redirect
-          else {
-        	  redirectPageForNoSearchResults(resp);
-          }
-      }  
+
+    if (book != null) {
+      int pageNum = 1;
+      if (book.contains("/")) {
+        int ind = book.indexOf("/");
+        pageNum = Integer.parseInt(book.substring(ind + 1));
+        book = book.substring(0, ind);
+      }
+
+      if (this.model.searchBooks(book, pageNum).size() != 0) {
+
+        int numBooks = this.model.searchBooks().size();
+        String title = "We found " + numBooks + " results!";
+        view.showSearchResults(this.model.searchBooks(book, pageNum),
+            pageNum, this.model.getNumPagesForSearch(), book, title, resp);
+
+      }
+
+      // if no books redirect
+      else {
+        redirectPageForNoSearchResults(resp);
+      }
+    }
   }
-  
+
   private void redirectPageForNoSearchResults(HttpServletResponse resp) {
-	// Respond!
-	    try (PrintWriter html = resp.getWriter()) {
-	      view.printPageStart(html, "NO RESULTS");
-	      // Print actual redirect directive:
-	      html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
+    // Respond!
+    try (PrintWriter html = resp.getWriter()) {
+      view.printPageStart(html, "NO RESULTS");
+      // Print actual redirect directive:
+      html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
 
-	      // Thank you, link.
-	      html.println("<div class=\"body\">");
-	      html.println("<div class=\"thanks\">");
-	      html.println("<p>Your search query has no results. Please accept this apology instead</p>");
-	      html.println("<a href=\"front\">Back to the front page...</a> " +
-	          "(automatically redirect in 3 seconds).");
-	      html.println("</div>");
-	      html.println("</div>");
+      // Thank you, link.
+      html.println("<div class=\"body\">");
+      html.println("<div class=\"thanks\">");
+      html.println("<p>Your search query has no results. Please accept this " +
+          "apology instead</p>");
+      html.println("<a href=\"front\">Back to the front page...</a> " +
+          "(automatically redirect in 3 seconds).");
+      html.println("</div>");
+      html.println("</div>");
 
-	      view.printPageEnd(html);
+      view.printPageEnd(html);
 
-	    } catch (IOException ignored) {
-	      // Don't consider a browser that stops listening to us after
-	      // submitting a form to be an error.
-	    }
+    } catch (IOException ignored) {
+      // Don't consider a browser that stops listening to us after
+      // submitting a form to be an error.
+    }
   }
 }
