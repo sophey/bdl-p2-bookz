@@ -57,7 +57,9 @@ public class HTMLView {
       
 	  html.println("<div class=\"form\">");
 	  html.println("	<form action=\"search\" method=\"SEARCH\">");
-	  html.println("		<label>Search: <input type=\"text\" name=\"searchBook\" /></label>");
+	  html.println("		<label>Search: "
+	  							+ "<input type=\"text\" name=\"searchBook\" />"
+						+ "</label>");
 	  html.println("	<form>");
 	  html.println("</div>");
 

@@ -139,19 +139,32 @@ public class Model {
   
   public void storeBooksForSearch(String book) {
 	book = book.toLowerCase();
-    booksWithSearch = new ArrayList<>();
+	
+    
+	booksWithSearch = new ArrayList<>();
     for (GutenbergBook newBook : library.values()) {
-		//split string into array of strings
-		String [] words = newBook.title.split("\\s+");
+		/**
+		 * Search for one word
+		 */
+    	//split string into array of strings
+		//String [] words = newBook.title.split("\\s+");
 		//http://stackoverflow.com/questions/4674850/converting-a-sentence-string-to-a-string-array-of-words-in-java
-		for (String word : words) {
-			// check for a non-word character 
-		    // It may also be necessary to adjust the character class
-			word = word.replaceAll("[^\\w]", "");
-			word = word.toLowerCase();
-			if (word.equals(book) || word.contains(book))
-				booksWithSearch.add(newBook);
-		} 	  
+//		for (String word : words) {
+//			// check for a non-word character 
+//		    // It may also be necessary to adjust the character class
+//			word = word.replaceAll("[^\\w]", "");
+//			word = word.toLowerCase();
+//			if (word.equals(book) || word.contains(book))
+//				booksWithSearch.add(newBook);
+//		} 	 
+		/**
+		 * Search for multiple words
+		 */
+		//newBook.title = newBook.title.toLowerCase();
+		String lowerCaseBook = newBook.title.toLowerCase();
+		if (lowerCaseBook.contains(book)) {
+			booksWithSearch.add(newBook);
+		}
     }
   } 
   
