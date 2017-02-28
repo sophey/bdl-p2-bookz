@@ -177,6 +177,22 @@ public class HTMLView {
       printPageEnd(html);
     }
   }
+  
+  public void showSearchResults(List<GutenbergBook> theBooks, int
+	      currentPage, int numPages, String query, String title, HttpServletResponse resp)
+	      throws IOException {
+	    try (PrintWriter html = resp.getWriter()) {
+	      printPageStart(html, title);
+	      if (theBooks != null) {
+	        for (int i = 0; i < Math.min(20, theBooks.size()); i++) {
+	          printBookHTML(html, theBooks.get(i));
+	        }
+	      }
+
+	      printPages(html, currentPage, numPages, query);
+	      printPageEnd(html);
+	    }
+	  }
 
   public void showFlagPage(GutenbergBook book, HttpServletResponse
       resp) throws IOException {

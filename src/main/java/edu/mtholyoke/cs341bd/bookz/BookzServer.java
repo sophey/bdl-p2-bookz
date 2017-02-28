@@ -235,18 +235,18 @@ public class BookzServer extends AbstractHandler {
           String searchCmd = Util.getAfterIfStartsWith("/searchBook", path);
       	
           int pageNum = 1;
-          
+          PrintWriter html = resp.getWriter();
           if (this.model.searchBooks(book, pageNum).size() != 0) {
-        	  System.out.println("not null");
-        	  System.out.println(this.model.searchBooks(book, pageNum).size());
-        	  // show all books with that title 
-              view.showBookCollection(this.model.searchBooks(book, pageNum), 
-              		pageNum, this.model.getNumPagesForSearch(), book, resp);
+        	  
+        	  int numBooks = this.model.searchBooks().size();
+        	  String title = "We found " + numBooks + " results!";
+              view.showSearchResults(this.model.searchBooks(book, pageNum), 
+              		pageNum, this.model.getNumPagesForSearch(), book, title, resp);
+              
           }
           
           // if no books redirect
           else {
-        	  System.out.println("null");
         	  redirectPageForNoSearchResults(resp);
           }
       }  
