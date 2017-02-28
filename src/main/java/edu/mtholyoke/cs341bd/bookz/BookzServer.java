@@ -120,9 +120,16 @@ public class BookzServer extends AbstractHandler {
       if (titleCmd != null) {
         char firstChar = titleCmd.charAt(0);
         int pageNum = Integer.parseInt(titleCmd.substring(2));
-        view.showBookCollection(this.model.getBooksStartingWith(firstChar,
-            pageNum), pageNum, model.getNumPagesStartingWithChar(firstChar),
-            Character.toString(firstChar), resp);
+        
+        if (this.model.getBooksStartingWith(firstChar) != null) {
+        	view.showBookCollection(this.model.getBooksStartingWith(firstChar,
+                    pageNum), pageNum, model.getNumPagesStartingWithChar(firstChar),
+                    Character.toString(firstChar), resp);
+        }
+        
+        else {
+        	redirectPageForNoSearchResults(resp);
+        } 
       }
 
       // Check for startsWith and substring
@@ -235,7 +242,7 @@ public class BookzServer extends AbstractHandler {
           String searchCmd = Util.getAfterIfStartsWith("/searchBook", path);
       	
           int pageNum = 1;
-          PrintWriter html = resp.getWriter();
+          //PrintWriter html = resp.getWriter();
           if (this.model.searchBooks(book, pageNum).size() != 0) {
         	  
         	  int numBooks = this.model.searchBooks().size();
